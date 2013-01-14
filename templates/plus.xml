@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+   <channel>
+      
+      <ttl>{{ config.GOOGLE_TTL }}</ttl>
+      <title>Google Plus feed for '{{ q }}' query</title>
+      <description>{{ config.BASE_URL }}</description>
+      <link>{{ config.BASE_URL }}</link>
+      <generator>{{ config.BASE_URL }}</generator>
+      <webMaster>{{ config.WEBMASTER }}</webMaster>
+      
+      {% for activity in feed["items"] %}
+         <item>
+            <guid>{{ activity["id"] }}</guid>
+            <title>{{ activity["title"] }}</title>
+            <link>{{ activity["url"] }}</link>
+            <description>{{ activity["object"]["content"] }}</description>
+            <pubDate>{{ activity["published"] }}</pubDate>
+            <comments>{{ activity["object"]["replies"]["selfLink"] }}</comments>
+            
+            {% for attachment in activity["object"]["attachments"] %}
+               <enclosure url="{{ attachment['url'] }}" />
+            {% endfor %}
+            
+         </item>
+      {% endfor %}
+   </channel>
+</rss>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+   <channel>
+   
+      <ttl>{{ config.FACEBOOK_TTL }}</ttl>
+      <title>Facebook feed for '{{ q }}' query</title>
+      <link>{{ config.BASE_URL }}</link>
+      <description>{{ config.BASE_URL }}</description>
+      <generator>{{ config.BASE_URL }}</generator>
+      <webMaster>{{ config.WEBMASTER }}</webMaster>
+      
+      {% for entry in feed.data %}
+         <item>
+            <guid>{{ entry["id"] }}</guid>
+            <pubDate>{{ entry["created_time"] }}</pubDate>
+            
+            {% if "photo" == entry["type"] %}
+               <title>{{ entry["story"] }}</title>
+               <description>{{ entry["message"] or entry["caption"] }}</description>
+               <link>{{ entry["link"] }}</link>
+               <enclosure url="{{ entry['picture'] }}" />
+
+
+            {% elif "status" == entry["type"] %}
+               <title>{{ entry["from"]["name"] }}</title>
+               <description>{{ entry["message"] }}</description>
+            
+            
+            {% elif "video" == entry["type"] %}
+               <title>{{ entry["name"] }}</title>
+               <description>{{ entry["message"] }}</description>
+               <source url="{{ entry['source'] }}">{{ entry["name"] }}</source>
+               <link>{{ entry["link"] }}</link>
+               <enclosure url="{{ entry['source'] }}" />
+            
+            {% elif "link" == entry["type"] %}
+               <title>{{ entry["story"] or entry["caption"] }}</title>
+               <description>{{ entry["description"] }}</description>
+               <link>{{ entry["link"] }}</link>
+               <enclosure url="{{ entry['picture'] }}" />
+            
+            {% else %}
+               <title>{{ entry["id"] }}</title>
+               <description>{{ entry["id"] }}</description>
+            
+            {% endif %}
+            
+         </item>
+      {% endfor %}
+   </channel>
+</rss>

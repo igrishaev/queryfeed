@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+   <channel>
+      
+      <ttl>{{ config.TWITTER_TTL }}</ttl>
+      <title>Twitter feed for '{{ q }}' query</title>
+      <description>{{ config.BASE_URL }}</description>
+      <link>{{ config.BASE_URL }}</link>
+      <generator>{{ config.BASE_URL }}</generator>
+      <webMaster>{{ config.WEBMASTER }}</webMaster>
+      
+      {% for tweet in feed["results"] %}
+         <item>
+            <guid>{{ tweet["id_str"] }}</guid>
+            <title>{{ tweet["from_user"] }}</title>
+            <link>http://twitter.com/{{ tweet["from_user"] }}/status/{{ tweet["id_str"] }}</link>
+            <description>{{ tweet["text"] }}</description>
+            <pubDate>{{ tweet["created_at"] }}</pubDate>
+            
+            {% for tag in tweet.get("entities", {}).get("hashtags", []) %}
+               <category>{{ tag["text"] }}</category>
+            {% endfor %}
+            
+            {% for url in tweet.get("entities", {}).get("urls", []) %}
+               <enclosure url="{{ url['expanded_url'] }}" />
+            {% endfor %}
+            
+            {% for media in tweet.get("entities", {}).get("media", []) %}
+               <enclosure url="{{ media['expanded_url'] }}" />
+            {% endfor %}
+         </item>
+      {% endfor %}
+   </channel>
+</rss>

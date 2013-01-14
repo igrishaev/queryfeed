@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <title>Queryfeed | Read Twitter and Facebook on RSS!</title>
+        
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="description" content="Get Twitter and Facebook RSS feed with your personal query!">
+  <meta name="keywords" content="RSS, Facebook, Twitter, reader, agregator, google reader, convert to, convert">
+  <meta name="author" content="Ivan Grishaev">
+  <meta itemprop="name" content="Read Twitter and Facebook on RSS">
+  <meta itemprop="description" content="Get Twitter and Facebook RSS feed with your personal query!">
+        
+        <link href="//current.bootstrapcdn.com/bootstrap-v204/css/bootstrap-combined.min.css" rel="stylesheet" />
+
+        <script type="text/javascript" src="//yandex.st/share/share.js" charset="utf-8"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script src="//current.bootstrapcdn.com/bootstrap-v204/js/bootstrap.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-33533163-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+
+
+
+    </head>
+    <body>
+
+        <style>
+
+            li {
+                list-style-type: none;
+            }
+
+            .hero-unit {
+                background-color: #fff;
+                margin-bottom: -40px;
+            }
+            
+            .modal-footer {
+                background-color: #fff;
+            }
+            
+            #tips {
+                margin-top: 25px;
+                margin-bottom: 25px;
+            }
+
+            .separator {
+              margin-bottom: 25px;
+            }
+
+            .center {
+              text-align: center;
+            }
+
+        </style>
+
+
+        <div class="container">
+        
+            <div class="hero-unit offset1">
+            
+              
+              <div style="float:right; margin-right:250px;" class="yashare-auto-init" data-yashareL10n="en" data-yashareType="link" data-yashareQuickServices="twitter,facebook,gplus,vkontakte"></div> 
+
+            
+            
+            
+                <h1><a href="/">Queryfeed</a></h1>
+
+		<p>Read <a href="http://twitter.com">Twitter</a> and <a href="http://facebook.com">Facebook</a> on RSS!</p>
+
+
+          <h2>Get RSS feed with your personal query!</h2>
+            </div>
+            
+            
+        
+            <div class="row">
+                <div class="span-4 offset2">
+                    <form class="form-search" method="GET" action="{{ url_for('twitter') }}">
+                        <div class="control-group">
+                            <div class="controls">
+                                <div class="input-append">
+                                    <input class="span5" id="q-twitter" size="16" type="text" name="q" placeholder="Twitter query"><button type="submit" class="btn">Search Twitter</button>
+
+<p>
+<a href="#" rel="tooltip" title="Search by hashtag" onClick="javascript: $('#q-twitter').val('#hashtag');">#hashtag</a>,
+<a href="#" rel="tooltip" title="Sent from the user @username" onClick="javascript: $('#q-twitter').val('from:username');">from:username</a>,
+<a href="#" rel="tooltip" title="Sent to the user @username" onClick="javascript: $('#q-twitter').val('to:username');">to:username</a>,
+<a href="#" rel="tooltip" title="Mentioning @username" onClick="javascript: $('#q-twitter').val('@username');">@username</a>,
+<a href="#" rel="tooltip" title='Containing either "love" or "hate" (or both)' onClick="javascript: $('#q-twitter').val('love OR hate');">love OR hate</a>,
+<a href="#twitter-tips" data-toggle="modal" rel="tooltip" title="All available patterns">more patterns &darr;</a>
+</p>
+                                </div>
+              
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="span-9 offset2">
+                    <form class="form-search" method="GET" action="{{ url_for('plus') }}">
+                        <div class="control-group">
+                            <div class="controls">
+                                <div class="input-append">
+                                    <input class="span5" id="q-plus" size="16" type="text" name="q" placeholder="Google+ query"><button type="submit" class="btn">Search Google+</button>
+                                </div>
+              
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="span-9 offset2">
+                    <form class="form-search" method="GET" action="{{ url_for('facebook') }}">
+                        <div class="control-group">
+                            <div class="controls">
+                                <div class="input-append">
+                                    <input class="span5" id="q-facebook" size="16" type="text" name="q" placeholder="Facebook query (experimental)"><button type="submit" class="btn">Search Facebook</button>
+                                </div>
+              
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="span4 offset2">
+                    <h3>Popular</h3>
+                    <ul>
+                    {% for f in populars %}
+                      {% if "twitter" == f.source %}
+                        <li>
+                          <img src="http://twitter.com/favicon.ico" width="16" height="16" />
+                          <a href="{{ url_for('twitter', q=f.q) }}">{{ f.q }}</a>
+                          <sup>{{ f.times }}</sup>
+                        </li>
+
+                      {% elif "facebook" == f.source %}
+                        <li>
+                          <img src="http://facebook.com/favicon.ico" width="16" height="16" />
+                          <a href="{{ url_for('facebook', q=f.q) }}">{{ f.q }}</a>
+                          <sup>{{ f.times }}</sup>
+                        </li>
+                      
+                      {% elif "plus" == f.source %}
+                        <li>
+                          <img src="https://ssl.gstatic.com/s2/oz/images/faviconr2.ico" width="16" height="16" />
+                          <a href="{{ url_for('plus', q=f.q) }}">{{ f.q }}</a>
+                          <sup>{{ f.times }}</sup>
+                        </li>
+                      
+                      {% endif%}
+                    {% endfor %}
+                  </ul>
+                </div>
+
+                <div class="span4">
+                    <h3>Recent</h3>
+                    <ul>
+                    {% for f in recents %}
+                      {% if "twitter" == f.source %}
+                        <li>
+                          <img src="http://twitter.com/favicon.ico" width="16" height="16" />
+                          <a href="{{ url_for('twitter', q=f.q) }}">{{ f.q }}</a>
+                        </li>
+
+                      {% elif "facebook" == f.source %}
+                        <li>
+                          <img src="http://facebook.com/favicon.ico" width="16" height="16" />
+                          <a href="{{ url_for('facebook', q=f.q) }}">{{ f.q }}</a>
+                        </li>
+                      
+                      {% elif "plus" == f.source %}
+                        <li>
+                          <img src="https://ssl.gstatic.com/s2/oz/images/faviconr2.ico" width="16" height="16" />
+                          <a href="{{ url_for('plus', q=f.q) }}">{{ f.q }}</a>
+                        </li>
+                      
+                      {% endif%}
+                    {% endfor %}
+                  </ul>
+                </div>
+
+            </div>
+
+            
+            
+
+            
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="span12 center">
+                        <p>Ivan Grishaev, 2012. <a href="mailto:ivan@grishaev.me">ivan@grishaev.me</a></p>
+                        
+                    </div>
+                </div>
+            
+            
+                <div class="row">
+                    <div class="span12 center">
+<a href="https://developers.google.com/appengine/" target="_blank">
+<img src="https://developers.google.com/appengine/images/appengine-noborder-120x30.gif" 
+alt="Powered by Google App Engine" /></a>
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="F4BS3QMG7JBCE">
+<button type="submit" class="btn btn-primary">Help us to increase quotas!</button>
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+<div class="modal hide" id="twitter-tips">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h3>Twitter search tips</h3>
+  </div>
+  <div class="modal-body">
+    <table class="table">
+    <thead>
+      <tr>
+        <th>Example</th>
+        <th>Finds tweets...</th>
+      </tr><tr>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td>twitter search</td>
+        <td>containing both "twitter" and "search". This is the default operator</td>
+      </tr>
+      <tr>
+        <td>"happy hour"</td>
+        <td>containing the exact phrase "happy hour"</td>
+      </tr>
+      <tr>
+        <td>love OR hate</td>
+        <td>containing either "love" or "hate" (or both)</td>
+      </tr>
+      <tr>
+        <td>beer -root</td>
+        <td>containing "beer" but not "root"</td>
+      </tr>
+      <tr>
+        <td>#haiku</td>
+        <td>containing the hashtag "haiku"</td>
+      </tr>
+      <tr>
+        <td>from:twitterapi</td>
+        <td>sent from the user @twitterapi</td>
+      </tr>
+      <tr>
+        <td>to:twitterapi</td>
+        <td>sent to the user @twitterapi</td>
+      </tr>
+      <tr>
+        <td>place:opentable:2</td>
+        <td>about the place with OpenTable ID 2</td>
+      </tr>
+      <tr>
+        <td>place:247f43d441defc03</td>
+        <td>about the place with Twitter ID 247f43d441defc03</td>
+      </tr>
+      <tr>
+        <td>@twitterapi</td>
+        <td>mentioning @twitterapi</td>
+      </tr>
+      <tr>
+        <td>superhero since:2011-05-09</td>
+        <td>containing "superhero" and sent since date "2011-05-09" (year-month-day).</td>
+      </tr>
+      <tr>
+        <td>twitterapi until:2011-05-09</td>
+        <td>containing "twitterapi" and sent before the date "2011-05-09".</td>
+      </tr>
+      <tr>
+        <td>movie -scary :)</td>
+        <td>containing "movie", but not "scary", and with a positive attitude.</td>
+      </tr>
+      <tr>
+        <td>flight :(</td>
+        <td>containing "flight" and with a negative attitude.</td>
+      </tr>
+      <tr>
+        <td>traffic ?</td>
+        <td>containing "traffic" and asking a question.</td>
+      </tr>
+      <tr>
+        <td>hilarious filter:links</td>
+        <td>containing "hilarious" and with a URL.</td>
+      </tr>
+      <tr>
+        <td>news source:tweet_button</td>
+        <td>containing "news" and entered via the Tweet Button</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+
+
+<script>
+  $("[rel=tooltip]").tooltip();
+</script>
+
+    </body>
+</html>
